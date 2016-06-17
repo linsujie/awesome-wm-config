@@ -60,7 +60,7 @@ customization.config.version = "1.7.18"
 customization.config.help_url = "https://github.com/pw4ever/awesome-wm-config/tree/" .. customization.config.version
 
 customization.default.property = {
-    layout = awful.layout.suit.floating,
+    layout = awful.layout.suit.max,
     mwfact = 0.5,
     nmaster = 1,
     ncol = 1,
@@ -76,10 +76,10 @@ customization.default.property = {
 
 customization.default.compmgr = 'xcompmgr'
 customization.default.compmgr_args = '-f -c -s'
-customization.default.wallpaper_change_interval = 15
+customization.default.wallpaper_change_interval = 150
 
 customization.option.wallpaper_change_p = true
-customization.option.tag_persistent_p = true
+customization.option.tag_persistent_p = false
 
 naughty.config.presets.low.opacity = customization.default.property.low_naughty_opacity
 naughty.config.presets.normal.opacity = customization.default.property.normal_naughty_opacity
@@ -263,7 +263,7 @@ end
 
 --{{
 local tools = {
-    terminal = "sakura",
+    terminal = "yakuake",
     system = {
         filemanager = "pcmanfm",
         taskmanager = "lxtask",
@@ -274,19 +274,19 @@ local tools = {
     },
 }
 
-tools.browser.primary = os.getenv("BROWSER") or "firefox"
-tools.browser.secondary = ({chromium="firefox", firefox="chromium"})[tools.browser.primary]
+tools.browser.primary = os.getenv("BROWSER") or "firefox-bin"
+tools.browser.secondary = ({chromium="firefox-bin", firefox="chromium"})[tools.browser.primary]
 
 -- alternative: override
 --tools.browser.primary = "google-chrome-stable"
 --tools.browser.secondary = "firefox"
 
-tools.editor.primary = os.getenv("EDITOR") or "gvim"
-tools.editor.secondary = ({emacs="gvim", gvim="emacs"})[tools.editor.primary]
+--tools.editor.primary = os.getenv("EDITOR") or "gvim"
+--tools.editor.secondary = ({emacs="gvim", gvim="emacs"})[tools.editor.primary]
 
 -- alternative: override
---tools.editor.primary = "gvim"
---tools.editor.secondary = "emacs"
+tools.editor.primary = "gvim"
+tools.editor.secondary = "emacs"
 
 local myapp = nil
 do
@@ -323,7 +323,7 @@ local layouts =
     awful.layout.suit.floating,
     awful.layout.suit.tile,
     awful.layout.suit.fair,
-    awful.layout.suit.max.fullscreen,
+    awful.layout.suit.max,
     awful.layout.suit.magnifier,
 }
 --[[
@@ -358,7 +358,7 @@ end
 -- {{{ Customized functions
 
 customization.func.system_lock = function ()
-  awful.util.spawn("xscreensaver-command -l")
+  awful.util.spawn("slock")
 end
 
 customization.func.system_suspend = function ()
@@ -1647,7 +1647,7 @@ customization.widgets.volume = wibox.widget.textbox()
 vicious.register(customization.widgets.volume, vicious.widgets.volume,
   "<span fgcolor='cyan'>$1%$2</span>", 1, "Master")
 do
-    local prog="gnome-alsamixer"
+    local prog="pavucontrol"
     local started=false
     customization.widgets.volume:buttons(awful.util.table.join(
     awful.button({ }, 1, function ()
@@ -2029,6 +2029,10 @@ awful.key({ modkey }, "c", function ()
     awful.util.spawn(tools.editor.primary .. " " .. awful.util.getdir("config") .. "/rc.lua" )
 end),
 
+awful.key({ modkey, "Control"    }, "m", function ()
+  awful.util.spawn("xkbset m")
+end),
+
 awful.key({ modkey, "Shift" }, "/", function() mymainmenu:toggle({keygrabber=true}) end),
 
 awful.key({ modkey, }, ";", function()
@@ -2292,7 +2296,7 @@ awful.key({}, "XF86Display", function ()
 end),
 
 awful.key({}, "Print", function ()
-    awful.util.spawn("xfce4-screenshooter")
+    awful.util.spawn("scrot")
 end),
 
 uniarg:key_repeat({}, "XF86Launch1", function ()
@@ -2335,7 +2339,7 @@ uniarg:key_repeat({ modkey, "Control" }, "Right", function ()
 end),
 
 awful.key({ modkey, "Control" }, "Up", function ()
-    awful.util.spawn("gnome-alsamixer")
+    awful.util.spawn("pavucontrol")
 end),
 
 uniarg:key_numarg({ modkey, "Shift" }, "Left",
