@@ -38,6 +38,15 @@ local capi = {
     client = client,
 }
 
+-- drop down terminal
+local quake = require("quake")
+local quakeconsole = {}
+for s = 1, screen.count() do
+   quakeconsole[s] = quake({ terminal = 'urxvt',
+                 height = 1,
+                 screen = s })
+end
+
 -- do not use letters, which shadow access key to menu entry
 awful.menu.menu_keys.down = { "Down", ".", ">", "'", "\"", }
 awful.menu.menu_keys.up = {  "Up", ",", "<", ";", ":", }
@@ -2056,7 +2065,9 @@ awful.key({ modkey, }, "x", function() mymainmenu:toggle({keygrabber=true}) end)
 
 awful.key({ modkey, }, "X", function() mymainmenu:toggle({keygrabber=true}) end),
 
-uniarg:key_repeat({ modkey,           }, "Return", function () awful.util.spawn(tools.terminal) end),
+awful.key({}, "F12", function () quakeconsole[mouse.screen]:toggle() end),
+
+uniarg:key_repeat({ modkey,           }, "Return", function () quakeconsole[mouse.screen]:toggle() end),
 
 uniarg:key_repeat({ modkey, "Mod1" }, "Return", function () awful.util.spawn("gksudo " .. tools.terminal) end),
 
@@ -2805,5 +2816,5 @@ end
 
 -- XDG style autostart with "dex"
 -- HACK continue
-awful.util.spawn_with_shell("if ! [ -e " .. awesome_autostart_once_fname .. " ]; then dex -a -e awesome; touch " .. awesome_autostart_once_fname .. "; fi")
+awful.util.spawn("if ! [ -e " .. awesome_autostart_once_fname .. " ]; then dex -a -e awesome; touch " .. awesome_autostart_once_fname .. "; fi")
 customization.func.client_opaque_on(nil) -- start xcompmgr

@@ -1,7 +1,7 @@
 [Desktop Entry]
-Name=Conky
-TryExec=conky
-Exec=conky -c "/home/linsj/.conky/conkyrc_grey"
+Name=devilspie
+TryExec=devilspie
+Exec=devilspie
 Terminal=false
 Type=Application
 StartupNotify=false

@@ -1,7 +1,7 @@
 [Desktop Entry]
-Name=Conky
-TryExec=conky
-Exec=conky -c "/home/linsj/.conky/conkyrc_grey"
+Name=goldendict
+TryExec=goldendict
+Exec=goldendict
 Terminal=false
 Type=Application
 StartupNotify=false
