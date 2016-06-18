@@ -88,7 +88,7 @@ customization.default.compmgr_args = '-f -c -s'
 customization.default.wallpaper_change_interval = 150
 
 customization.option.wallpaper_change_p = true
-customization.option.tag_persistent_p = false
+customization.option.tag_persistent_p = true
 
 naughty.config.presets.low.opacity = customization.default.property.low_naughty_opacity
 naughty.config.presets.normal.opacity = customization.default.property.normal_naughty_opacity
@@ -2816,5 +2816,5 @@ end
 
 -- XDG style autostart with "dex"
 -- HACK continue
-awful.util.spawn("if ! [ -e " .. awesome_autostart_once_fname .. " ]; then dex -a -e awesome; touch " .. awesome_autostart_once_fname .. "; fi")
+awful.util.spawn_with_shell("if ! [ -e " .. awesome_autostart_once_fname .. " ]; then dex -a -e awesome; touch " .. awesome_autostart_once_fname .. "; fi")
 customization.func.client_opaque_on(nil) -- start xcompmgr
