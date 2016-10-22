@@ -274,7 +274,7 @@ end
 local tools = {
     terminal = "yakuake",
     system = {
-        filemanager = "pcmanfm",
+        filemanager = "nautilus",
         taskmanager = "lxtask",
     },
     browser = {
@@ -2307,7 +2307,7 @@ awful.key({}, "XF86Display", function ()
 end),
 
 awful.key({}, "Print", function ()
-    awful.util.spawn("scrot")
+    awful.util.spawn("scrot -e 'mv $f ~/Pictures/screenshots'")
 end),
 
 uniarg:key_repeat({}, "XF86Launch1", function ()
