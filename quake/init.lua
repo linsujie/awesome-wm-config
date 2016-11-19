@@ -95,6 +95,7 @@ function QuakeConsole:display()
    client:geometry({ x = x, y = y, width = width, height = height })
 
    -- Sticky and on top
+   client.opacity = self.opacity
    client.ontop = true
    client.above = true
    client.skip_taskbar = true
@@ -132,6 +133,9 @@ function QuakeConsole:new(config)
 
    config.screen   = config.screen or capi.mouse.screen
    config.visible  = config.visible or false -- Initially, not visible
+   config.opacity  = config.opacity or 0.7 -- Initially, 0.7
+   config.min_opacity  = config.min_opacity or 0.4 -- Initially, 0.4
+   config.max_opacity  = config.max_opacity or 1 -- Initially, 1
 
    local console = setmetatable(config, { __index = QuakeConsole })
    capi.client.connect_signal("manage",
@@ -162,6 +166,26 @@ end
 function QuakeConsole:toggle()
    self.visible = not self.visible
    self:display()
+end
+
+function QuakeConsole:opaque_more()
+  self:toggle()
+  local opacity = self.opacity + 0.1
+
+  if opacity and opacity <= self.max_opacity then
+    self.opacity = opacity
+  end
+  self:toggle()
+end
+
+function QuakeConsole:opaque_less()
+  self:toggle()
+  local opacity = self.opacity - 0.1
+
+  if opacity and opacity >= self.min_opacity then
+    self.opacity = opacity
+  end
+  self:toggle()
 end
 
 setmetatable(_M, { __call = function(_, ...) return QuakeConsole:new(...) end })

@@ -2068,6 +2068,10 @@ awful.key({ modkey, }, "X", function() mymainmenu:toggle({keygrabber=true}) end)
 awful.key({}, "F12", function () quakeconsole[mouse.screen]:toggle() end),
 
 uniarg:key_repeat({ modkey,           }, "Return", function () quakeconsole[mouse.screen]:toggle() end),
+uniarg:key_repeat({ modkey,  "Shift" }, "Return", function () quakeconsole[mouse.screen]:toggle() end),
+
+uniarg:key_repeat({ modkey, "Shift"   }, "[", function() quakeconsole[mouse.screen]:opaque_less() end),
+uniarg:key_repeat({ modkey, "Shift"   }, "]", function() quakeconsole[mouse.screen]:opaque_more() end),
 
 uniarg:key_repeat({ modkey, "Mod1" }, "Return", function () awful.util.spawn("gksudo " .. tools.terminal) end),
 
@@ -2486,10 +2490,6 @@ awful.key({ modkey,           }, ".", customization.func.client_maximize_vertica
 awful.key({ modkey,           }, "[", customization.func.client_opaque_less),
 
 awful.key({ modkey,           }, "]", customization.func.client_opaque_more),
-
-awful.key({ modkey, 'Shift'   }, "[", customization.func.client_opaque_off),
-
-awful.key({ modkey, 'Shift'   }, "]", customization.func.client_opaque_on),
 
 awful.key({ modkey, "Control" }, "Return", customization.func.client_swap_with_master),
 
