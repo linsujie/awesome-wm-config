@@ -1829,7 +1829,7 @@ for s = 1, screen.count() do
     customization.widgets.tasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, customization.widgets.tasklist.buttons)
 
     -- Create the wibox
-    customization.widgets.wibox[s] = awful.wibox({ position = "top", screen = s })
+    customization.widgets.wibox[s] = awful.wibox({ position = "top", height = 27, screen = s })
 
     -- Widgets that are aligned to the left
     local left_layout = wibox.layout.fixed.horizontal()
