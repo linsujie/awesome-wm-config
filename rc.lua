@@ -277,6 +277,7 @@ local tools = {
     system = {
         filemanager = "nautilus",
         taskmanager = "lxtask",
+        mailclient = "claws-mail",
     },
     browser = {
     },
@@ -2237,6 +2238,10 @@ uniarg:key_repeat({ modkey,  }, "E", function ()
     awful.util.spawn(tools.system.filemanager)
 end),
 
+awful.key({ modkey, "Mod1" }, "m", function ()
+  awful.util.spawn(tools.system.mailclient)
+end),
+
 uniarg:key_repeat({ modkey, "Mod1", }, "p", function ()
     awful.util.spawn("putty")
 end),
@@ -2344,7 +2349,7 @@ awful.key({}, "XF86Display", function ()
 end),
 
 awful.key({}, "Print", function ()
-    awful.util.spawn("scrot -e 'mv $f ~/Pictures/screenshots'")
+    awful.util.spawn("shutter -w")
 end),
 
 uniarg:key_repeat({}, "XF86Launch1", function ()
@@ -2725,8 +2730,12 @@ awful.rules.rules = {
             focusable = false,
             ontop = false,
         },
-    }
+    },
 
+    {
+        rule = { class = "Gvim" },
+        properties = { size_hints_honor = false }
+    }
 }
 -- }}}
 
