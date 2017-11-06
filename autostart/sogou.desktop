@@ -1,7 +1,7 @@
 [Desktop Entry]
-Name=fcitx
-TryExec=fcitx
-Exec=fcitx
+Name=sogou
+TryExec=sogou-qimpanel
+Exec=sogou-qimpanel
 Terminal=false
 Type=Application
 StartupNotify=false
