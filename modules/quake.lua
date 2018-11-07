@@ -6,6 +6,7 @@
 --]]
 
 local awful  = require("awful")
+local naughty = require("naughty")
 local capi   = { client = client,
                  mouse  = mouse,
                  screen = screen,
@@ -113,7 +114,7 @@ function quake:new(config)
    -- Compute size
    local geom = capi.screen[conf.screen].workarea
    if width  <= 1 then width = geom.width * width end
-   if height <= 1 then height = geom.height * height end
+   if height <= 1 then height = (geom.height - wibox_height) * height end
    local x, y
    if     horiz == "left"  then x = geom.x
    elseif horiz == "right" then x = geom.width + geom.x - width
@@ -122,6 +123,13 @@ function quake:new(config)
    elseif vert == "bottom" then y = geom.height + geom.y - height
    else   y = geom.y + (geom.height - height)/2 end
    conf.geometry = { x = x, y = y + wibox_height, width = width, height = height }
+   naughty.notify({
+     preset = naughty.config.presets.normal,
+     title="debug info",
+     text=info,
+     timeout = 10,
+     screen = awful.screen.focused(),
+   })
 
    local console = setmetatable(conf, { __index = quake })
    capi.client.connect_signal("manage", function(c)

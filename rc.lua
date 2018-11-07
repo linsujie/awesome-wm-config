@@ -34,8 +34,8 @@ for s in screen do
       height = 1,
       width = 1,
       wibox_height = wibar_height,
-      vert = center,
-      horiz = center,
+      vert = 'top',
+      horiz = 'center',
     })
 end
 
@@ -1682,11 +1682,6 @@ customization.widgets.bat_container = wibox.widget {
     },
   }
 }
--- customization.widgets.bat:set_width(8)
--- customization.widgets.bat:set_height(10)
--- customization.widgets.bat:set_background_color("#494B4F")
--- customization.widgets.bat:set_border_color(nil)
--- customization.widgets.bat:set_color()
 vicious.register(customization.widgets.bat, vicious.widgets.bat, 
     function (bat, args)
         local perc = args[2]
@@ -3020,6 +3015,6 @@ end
 
 -- XDG style autostart with "dex"
 -- HACK continue
--- awful.spawn.with_shell("if ! [ -e " .. awesome_autostart_once_fname .. " ]; then dex -a -e awesome; touch " .. awesome_autostart_once_fname .. "; fi")
-awful.spawn.with_shell("if not test -e " .. awesome_autostart_once_fname .. "; dex -a -e awesome; touch " .. awesome_autostart_once_fname .. "; end")
+awful.spawn.with_shell("if ! [ -e " .. awesome_autostart_once_fname .. " ]; then dex -a -e awesome; touch " .. awesome_autostart_once_fname .. "; fi")
+-- awful.spawn.with_shell("if not test -e " .. awesome_autostart_once_fname .. "; dex -a -e awesome; touch " .. awesome_autostart_once_fname .. "; end")
 customization.func.client_opaque_on(nil) -- start xcompmgr
