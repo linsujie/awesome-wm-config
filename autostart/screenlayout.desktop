@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Set Screen
+TryExec=/home/linsj/.screenlayout
+Exec=bash /home/linsj/.screenlayout
+Terminal=false
+Type=Application
+StartupNotify=false
+OnlyShowIn=awesome

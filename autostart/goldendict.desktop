@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=goldendict
+TryExec=goldendict
+Exec=goldendict
+Terminal=false
+Type=Application
+StartupNotify=false
+OnlyShowIn=awesome

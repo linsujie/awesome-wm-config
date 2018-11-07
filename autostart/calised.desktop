@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=calised
+TryExec=calised
+Exec=calised
+Terminal=false
+Type=Application
+StartupNotify=false
+OnlyShowIn=awesome

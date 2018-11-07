@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Terminal=false
+Icon=nutstore-small
+TryExec=/home/linsj/.nutstore/dist/bin/nutstore-pydaemon.py
+Exec=sh -c "(sleep 5 && nohup ~/.nutstore/dist/bin/nutstore-pydaemon.py >/dev/null 2>&1) &"
+Name=Nutstore
+Name[zh_CN]=坚果云
+Comment=AutoStart Nutstore
+Comment[zh_CN]=自动启动坚果云
