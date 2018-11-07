@@ -23,6 +23,21 @@ local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 local xrandr = require("xrandr")
 local foggy = require("foggy")
+local wibar_height = 27
+
+local quake = require("quake")
+local quakeconsole = {}
+for s in screen do
+  quakeconsole[s.index] = quake({
+      app = 'urxvt',
+      screen = s.index,
+      height = 1,
+      width = 1,
+      wibox_height = wibar_height,
+      vert = center,
+      horiz = center,
+    })
+end
 
 -- vicious widgets
 local vicious = require("vicious")
@@ -67,7 +82,7 @@ customization.config.version = "4.0.13"
 customization.config.help_url = "https://github.com/pw4ever/awesome-wm-config/tree/" .. customization.config.version
 
 customization.default.property = {
-    layout = awful.layout.suit.floating,
+    layout = awful.layout.suit.max,
     mwfact = 0.5,
     nmaster = 1,
     ncol = 1,
@@ -83,7 +98,7 @@ customization.default.property = {
 
 customization.default.compmgr = 'xcompmgr'
 customization.default.compmgr_args = '-f -c -s'
-customization.default.wallpaper_change_interval = 15
+customization.default.wallpaper_change_interval = 150
 
 customization.option.wallpaper_change_p = true
 customization.option.tag_persistent_p = true
@@ -165,16 +180,16 @@ do
         end
         customization.func.client_opaque_off(nil) -- prevent compmgr glitches
         if not restart then
-            awful.util.spawn_with_shell("rm -rf " .. awesome_autostart_once_fname)
-            awful.util.spawn_with_shell("rm -rf " .. awesome_client_tags_fname)
+            awful.spawn.with_shell("rm -rf " .. awesome_autostart_once_fname)
+            awful.spawn.with_shell("rm -rf " .. awesome_client_tags_fname)
             if not customization.option.tag_persistent_p then
-                awful.util.spawn_with_shell("rm -rf " .. awesome_tags_fname .. '*')
+                awful.spawn.with_shell("rm -rf " .. awesome_tags_fname .. '*')
             end
             bashets.stop()
         else -- if restart, save client tags
             -- save tags for each client
             awful.util.mkdir(awesome_client_tags_fname)
-            -- !! avoid awful.util.spawn_with_shell("mkdir -p " .. awesome_client_tags_fname) 
+            -- !! avoid awful.spawn.with_shell("mkdir -p " .. awesome_client_tags_fname) 
             -- race condition (whether awesome_client_tags_fname is created) due to asynchrony of "spawn_with_shell"
             for _, c in ipairs(client.get()) do
                 local client_id = c.pid .. '-' .. c.window
@@ -239,13 +254,13 @@ do
 
     init_theme("zenburn")
 
-    awful.util.spawn_with_shell("hsetroot -solid '#000000'")
+    awful.spawn.with_shell("hsetroot -solid '#000000'")
 
     -- randomly select a background picture
     --{{
     function customization.func.change_wallpaper()
         if customization.option.wallpaper_change_p then
-            awful.util.spawn_with_shell("cd " .. config_path .. "/wallpaper/; ./my-wallpaper-pick.sh")
+            awful.spawn.with_shell("cd " .. config_path .. "/wallpaper/; ./my-wallpaper-pick.sh")
         end
     end
 
@@ -271,9 +286,9 @@ end
 
 --{{
 local tools = {
-    terminal = "sakura",
+    terminal = "urxvt",
     system = {
-        filemanager = "pcmanfm",
+        filemanager = "nautilus",
         taskmanager = "lxtask",
     },
     browser = {
@@ -282,19 +297,19 @@ local tools = {
     },
 }
 
-tools.browser.primary = os.getenv("BROWSER") or "firefox"
-tools.browser.secondary = ({chromium="firefox", firefox="chromium"})[tools.browser.primary]
+tools.browser.primary = os.getenv("BROWSER") or "firefox-bin"
+tools.browser.secondary = ({chromium="firefox-bin", firefox="chromium"})[tools.browser.primary]
 
 -- alternative: override
 --tools.browser.primary = "google-chrome-stable"
 --tools.browser.secondary = "firefox"
 
-tools.editor.primary = os.getenv("EDITOR") or "gvim"
-tools.editor.secondary = ({emacs="gvim", gvim="emacs"})[tools.editor.primary]
+-- tools.editor.primary = os.getenv("EDITOR") or "gvim"
+-- tools.editor.secondary = ({emacs="gvim", gvim="emacs"})[tools.editor.primary]
 
 -- alternative: override
---tools.editor.primary = "gvim"
---tools.editor.secondary = "emacs"
+tools.editor.primary = "gvim"
+tools.editor.secondary = "emacs"
 
 local myapp = nil
 do
@@ -328,11 +343,12 @@ modkey = "Mod4"
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
 {
-    awful.layout.suit.floating,
+    -- awful.layout.suit.floating,
     awful.layout.suit.tile,
     awful.layout.suit.fair,
     awful.layout.suit.max.fullscreen,
-    awful.layout.suit.magnifier,
+    awful.layout.suit.max,
+    -- awful.layout.suit.magnifier,
 }
 --[[
 local layouts =
@@ -366,7 +382,7 @@ end
 -- {{{ Customized functions
 
 customization.func.system_lock = function ()
-    awful.util.spawn("xscreensaver-command -l")
+    awful.util.spawn("slock")
 end
 
 customization.func.system_suspend = function ()
@@ -745,11 +761,11 @@ customization.func.client_opaque_more = function (c)
 end
 
 customization.func.client_opaque_off = function (c)
-  awful.util.spawn_with_shell("pkill " .. customization.default.compmgr)
+  awful.spawn.with_shell("pkill " .. customization.default.compmgr)
 end
 
 customization.func.client_opaque_on = function (c)
-  awful.util.spawn_with_shell(customization.default.compmgr.. " " .. customization.default.compmgr_args)
+  awful.spawn.with_shell(customization.default.compmgr.. " " .. customization.default.compmgr_args)
 end
 
 customization.func.client_swap_with_master = function (c) 
@@ -1415,7 +1431,7 @@ do
                     function ()
                         local t = c:tags()
                         if t then
-                            awful.tag.viewonly(t[1])
+                            t[1].view_only() --awful.tag.viewonly(t[1])
                         end
                         clear_instance()
                         client.focus = c
@@ -1525,7 +1541,7 @@ do
             timeout = 20,
             screen = awful.screen.focused(),
         })
-        awful.util.spawn_with_shell(tools.browser.primary .. " '" .. customization.config.help_url .. "'")
+        awful.spawn.with_shell(tools.browser.primary .. " '" .. customization.config.help_url .. "'")
     end
 end
 
@@ -1604,7 +1620,7 @@ customization.widgets.launcher = awful.widget.launcher({
 
 -- vicious widgets: http://awesome.naquadah.org/wiki/Vicious
 
-customization.widgets.cpuusage = awful.widget.graph()
+customization.widgets.cpuusage = wibox.widget.graph()
 customization.widgets.cpuusage:set_width(50)
 customization.widgets.cpuusage:set_background_color("#494B4F")
 customization.widgets.cpuusage:set_color({ 
@@ -1644,19 +1660,33 @@ do
     ))
 end
 
-customization.widgets.bat = awful.widget.progressbar()
+customization.widgets.bat = wibox.widget.progressbar()
 customization.widgets.bat.last_perc = nil
 customization.widgets.bat.warning_threshold = 10
 customization.widgets.bat.instance = "BAT0"
-customization.widgets.bat:set_width(8)
-customization.widgets.bat:set_height(10)
-customization.widgets.bat:set_vertical(true)
-customization.widgets.bat:set_background_color("#494B4F")
-customization.widgets.bat:set_border_color(nil)
-customization.widgets.bat:set_color({
-    type = "linear", from = { 0, 0 }, to = { 0, 10 },
-    stops = {{ 0, "#AECF96" }, { 0.5, "#88A175" }, { 1, "#FF5656" }}
-})
+
+customization.widgets.bat_container = wibox.widget {
+  layout = wibox.container.rotate,
+  direction = 'east',
+  forced_width = 8,
+  forced_height = 10,
+  {
+    widget = customization.widgets.bat,
+    background_color = "#494B4F",
+    border_color = nil,
+    color = {
+      type = "linear",
+      from = { 30, 0 },
+      to = { 0, 0 },
+      stops = {{ 0, "#AECF96" }, { 0.5, "#88A175" }, { 10, "#FF5656" }}
+    },
+  }
+}
+-- customization.widgets.bat:set_width(8)
+-- customization.widgets.bat:set_height(10)
+-- customization.widgets.bat:set_background_color("#494B4F")
+-- customization.widgets.bat:set_border_color(nil)
+-- customization.widgets.bat:set_color()
 vicious.register(customization.widgets.bat, vicious.widgets.bat, 
     function (bat, args)
         local perc = args[2]
@@ -1717,7 +1747,7 @@ vicious.register(customization.widgets.mpdstatus, vicious.widgets.mpd,
     return ""
   end, 1)
 -- http://git.sysphere.org/vicious/tree/README
-customization.widgets.mpdstatus = wibox.layout.constraint(customization.widgets.mpdstatus, "max", 180, nil)
+customization.widgets.mpdstatus = wibox.container.constraint(customization.widgets.mpdstatus, "max", 180, nil)
 do
     customization.widgets.mpdstatus:buttons(awful.util.table.join(
     awful.button({ }, 1, function ()
@@ -1919,30 +1949,29 @@ function(s)
         )
 
     -- Create the wibox
-    customization.widgets.wibox[s] = awful.wibox({ position = "top", screen = s })
+    customization.widgets.wibox[s] = awful.wibar({ position = "top", height = wibar_height, screen = s })
 
     customization.widgets.wibox[s]:setup {
-        layout = wibox.layout.align.horizontal,
-        { -- Left widgets
-            layout = wibox.layout.fixed.horizontal,
-            customization.widgets.launcher,
-            customization.widgets.taglist[s],
-            customization.widgets.uniarg[s],
-            customization.widgets.promptbox[s],
-        },
-        customization.widgets.tasklist[s], -- Middle widget
-        { -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
-            customization.widgets.keyboardlayout,
-            wibox.widget.systray(),
-            customization.widgets.cpuusage,
-            customization.widgets.memusage,
-            customization.widgets.bat,
-            customization.widgets.mpdstatus,
-            customization.widgets.volume,
-            customization.widgets.date,
-            customization.widgets.layoutbox[s],
-        },
+      layout = wibox.layout.align.horizontal,
+      { -- Left widgets
+        layout = wibox.layout.fixed.horizontal,
+        customization.widgets.launcher,
+        customization.widgets.taglist[s],
+        customization.widgets.uniarg[s],
+        customization.widgets.promptbox[s],
+      },
+      customization.widgets.tasklist[s], -- Middle widget
+      { -- Right widgets
+        layout = wibox.layout.fixed.horizontal,
+        -- customization.widgets.keyboardlayout,
+        wibox.widget.systray(),
+        customization.widgets.cpuusage,
+        customization.widgets.memusage,
+        customization.widgets.bat_container,
+        customization.widgets.volume,
+        customization.widgets.date,
+        customization.widgets.layoutbox[s],
+      },
     }
 
 end
@@ -1986,7 +2015,7 @@ do
                             ncol = customization.default.property.ncol,
                         }
                         )
-                        awful.tag.move(count[count_index], tag)
+                        tag.index = count[count_index]
                         count[count_index] = count[count_index]+1
                     end
                 end
@@ -1994,13 +2023,12 @@ do
             end
         end
 
-        for s = 1, screen.count() do
-            local tags = awful.tag.gettags(s)
-            if #tags >= 1 then
-                local fname = awesome_tags_fname .. "-selected." .. s 
+        for s in screen do
+            if #(s.tags) >= 1 then
+                local fname = awesome_tags_fname .. "-selected." .. s.index 
                 f = io.open(fname, "r")
                 if f then
-                    local tag = awful.tag.gettags(s)[tonumber(f:read("*l"))]
+                    local tag = s.tags[tonumber(f:read("*l"))]
                     if tag then
                         awful.tag.viewonly(tag)
                     end
@@ -2008,9 +2036,9 @@ do
                 end
                 os.remove(fname)
             else
-                local tag = awful.tag.add("main" .. s,
+                local tag = awful.tag.add("main" .. s.index,
                 {
-                    screen = s,
+                    screen = s.index,
                     layout = customization.default.property.layout,
                     mwfact = customization.default.property.mwfact,
                     nmaster = customization.default.property.nmaster,
@@ -2023,12 +2051,12 @@ do
 
     else
 
-        for s = 1, screen.count() do
-            local tags = awful.tag.gettags(s)
+        for s in screen do
+            local tags = s.tags
             if #tags < 1 then
-                local tag = awful.tag.add("main" .. s,
+                local tag = awful.tag.add("main" .. s.index,
                 {
-                    screen = s,
+                    screen = s.index,
                     layout = customization.default.property.layout,
                     mwfact = customization.default.property.mwfact,
                     nmaster = customization.default.property.nmaster,
@@ -2082,6 +2110,13 @@ function ()
         uniarg:deactivate()
     end)
 end),
+
+awful.key({ modkey, "Control" }, "m", function ()
+  awful.spawn("xkbset m")
+end),
+awful.key({ modkey, "Mod1" }, "m", function ()
+    awful.util.spawn(tools.system.mailclient)
+  end),
 
 -- persistent universal arguments
 awful.key({ modkey, "Shift" }, "u",
@@ -2187,7 +2222,7 @@ end),
 
 awful.key({modkey}, "F3", function()
     local config_path = awful.util.getdir("config")
-    awful.util.spawn_with_shell(config_path .. "/bin/trackpad-toggle.sh")
+    awful.spawn.with_shell(config_path .. "/bin/trackpad-toggle.sh")
 end),
 
 awful.key({modkey}, "F4", function()
@@ -2226,7 +2261,10 @@ awful.key({ modkey, }, "x", function() mymainmenu:toggle({keygrabber=true}) end)
 
 awful.key({ modkey, }, "X", function() mymainmenu:toggle({keygrabber=true}) end),
 
-uniarg:key_repeat({ modkey,           }, "Return", function () awful.util.spawn(tools.terminal) end),
+awful.key({}, "F12", function () quakeconsole[mouse.screen.index]:toggle() end),
+uniarg:key_repeat({ modkey,           }, "Return", function () quakeconsole[mouse.screen.index]:toggle() end),
+uniarg:key_repeat({ modkey, "Shift"   }, "[", function() print(mouse.screen.index); print(quakeconsole[mouse.screen.index]); quakeconsole[mouse.screen.index]:opaque_change(-0.1) end),
+uniarg:key_repeat({ modkey, "Shift"   }, "]", function() quakeconsole[mouse.screen.index]:opaque_change(0.1) end),
 
 uniarg:key_repeat({ modkey, "Mod1" }, "Return", function () awful.util.spawn("gksudo " .. tools.terminal) end),
 
@@ -2466,7 +2504,7 @@ awful.key({}, "XF86Display", function ()
 end),
 
 awful.key({}, "Print", function ()
-    awful.util.spawn("xfce4-screenshooter")
+    awful.util.spawn("shutter -s")
 end),
 
 uniarg:key_repeat({}, "XF86Launch1", function ()
@@ -2646,9 +2684,9 @@ awful.key({ modkey,           }, "[", customization.func.client_opaque_less),
 
 awful.key({ modkey,           }, "]", customization.func.client_opaque_more),
 
-awful.key({ modkey, 'Shift'   }, "[", customization.func.client_opaque_off),
+-- awful.key({ modkey, 'Shift'   }, "[", customization.func.client_opaque_off),
 
-awful.key({ modkey, 'Shift'   }, "]", customization.func.client_opaque_on),
+-- awful.key({ modkey, 'Shift'   }, "]", customization.func.client_opaque_on),
 
 awful.key({ modkey, "Control" }, "Return", customization.func.client_swap_with_master),
 
@@ -2853,6 +2891,11 @@ awful.rules.rules = {
             focusable = false,
             ontop = false,
         },
+    },
+
+    {
+      rule = { class = "Gvim" },
+      properties = { size_hints_honor = false }
     }
 
 }
@@ -2977,5 +3020,6 @@ end
 
 -- XDG style autostart with "dex"
 -- HACK continue
-awful.util.spawn_with_shell("if ! [ -e " .. awesome_autostart_once_fname .. " ]; then dex -a -e awesome; touch " .. awesome_autostart_once_fname .. "; fi")
+-- awful.spawn.with_shell("if ! [ -e " .. awesome_autostart_once_fname .. " ]; then dex -a -e awesome; touch " .. awesome_autostart_once_fname .. "; fi")
+awful.spawn.with_shell("if not test -e " .. awesome_autostart_once_fname .. "; dex -a -e awesome; touch " .. awesome_autostart_once_fname .. "; end")
 customization.func.client_opaque_on(nil) -- start xcompmgr
