@@ -123,13 +123,6 @@ function quake:new(config)
    elseif vert == "bottom" then y = geom.height + geom.y - height
    else   y = geom.y + (geom.height - height)/2 end
    conf.geometry = { x = x, y = y + wibox_height, width = width, height = height }
-   naughty.notify({
-     preset = naughty.config.presets.normal,
-     title="debug info",
-     text=info,
-     timeout = 10,
-     screen = awful.screen.focused(),
-   })
 
    local console = setmetatable(conf, { __index = quake })
    capi.client.connect_signal("manage", function(c)

@@ -455,6 +455,13 @@ end
 
 customization.func.client_focus_next = function ()
     awful.client.focus.byidx(1)
+    -- local instance = naughty.notify({
+    --   preset = naughty.config.presets.normal,
+    --   title="awesome info",
+    --   text="Focus at: " .. tostring(awful.client.instance),
+    --   timeout = 10,
+    --   screen = awful.screen.focused(),
+    -- })
     if client.focus then client.focus:raise() end
 end
 
@@ -2710,8 +2717,7 @@ for i = 1, 10 do
             customization.widgets.promptbox[scr].widget,
             function (text)
                 if #text>0 then
-                    tag = awful.tag.add(text)
-                    awful.tag.setscreen(tag, scr)
+                    tag = awful.tag.add(text, { screen = src, layout = awful.layout.suit.max })
                     awful.tag.move(#tags+1, tag)
                     awful.tag.viewonly(tag)
                 end
