@@ -158,7 +158,7 @@ function quake:toggle()
 end
 
 function quake:opaque_change(v)
-	client = nil
+	local client = nil
 	i = 0
 	for c in awful.client.iterate(function (c)
 		-- c.name may be changed!

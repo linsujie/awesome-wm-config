@@ -454,20 +454,13 @@ end
 -- {{ client actions
 
 customization.func.client_focus_next = function ()
-    awful.client.focus.byidx(1)
-    -- local instance = naughty.notify({
-    --   preset = naughty.config.presets.normal,
-    --   title="awesome info",
-    --   text="Focus at: " .. tostring(awful.client.instance),
-    --   timeout = 10,
-    --   screen = awful.screen.focused(),
-    -- })
-    if client.focus then client.focus:raise() end
+  client.focus = awful.client.next(1)
+  if client.focus then client.focus:raise() end
 end
 
 customization.func.client_focus_prev = function ()
-    awful.client.focus.byidx(-1)
-    if client.focus then client.focus:raise() end
+  client.focus = awful.client.next(-1)
+  if client.focus then client.focus:raise() end
 end
 
 customization.func.client_focus_urgent = awful.client.urgent.jumpto
