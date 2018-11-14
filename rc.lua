@@ -382,7 +382,7 @@ end
 -- {{{ Customized functions
 
 customization.func.system_lock = function ()
-    awful.util.spawn("slock")
+    awful.util.spawn("xscreensaver-command -l")
 end
 
 customization.func.system_suspend = function ()
